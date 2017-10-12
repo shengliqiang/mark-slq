@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.zoneland.analysis.dao.MenuDao">
+	<!-- 查找用户的菜单 -->
+    <select id="queryMenuList" parameterType="java.util.Map"  resultType="menu" >
+        select 
+			a.table_id id,
+			a.table_name name,
+			a.table_type tableType,
+			a.datatable dataTable,
+			a.parentid parentId,
+			a.isDistinguish isDistinguish,
+			b.operation operation
+			from DM_ACCESS_CONFIG a,
+		  		 dm_user_access_control b 
+			where a.isable = 1 
+				and b.MASTER = 'User'
+				<if test="userId != null and userId != ''">
+      				and b.MasterValue = #{userId}
+      			</if>
+				and b.Access = 'Menu'
+				and a.tableType = b.AccessValue
+ 			order by a.order_num
+    </select>
+
+    
+
+	<!-- 查找用户的按钮 -->
+    <select id="queryButtonList" parameterType="java.util.Map"  resultType="java.util.HashMap" >
+       select  
+	     id,
+	     master,
+	     mastervalue,
+	     access,
+	     accessvalue,
+	     rules,
+	     operation,
+	     ordernum	 
+		 from 	dm_user_access_control 
+		 where master = 'User' 
+            and access = 'Button' 
+			<if test="userId != null and userId != ''">
+      				and mastervalue = #{userId}
+      		</if>  
+		 order  by ordernum
+    </select>
+
+</mapper>
